@@ -72,6 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #
 
   config.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
+    puppet.options = "--hiera_config /vagrant/manifests/hiera.yaml"
     puppet.manifests_path = "manifests"
     puppet.manifest_file  = "init.pp"
   end
