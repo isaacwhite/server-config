@@ -36,9 +36,16 @@ class personal::nginx_config {
 		# aliases
 		$aliases = concat([$with_env], $www_host)
 
+		if $php {
+			$try_files = " /index.php\$is_args\$args"
+		} else {
+			$try_files = " /index.html"
+		}
+
 		nginx::resource::vhost { $full_host:
-	  		www_root => $www_root,
 	  		server_name => $aliases,
+	  		www_root => $www_root,
+	  		try_files => ['$uri', '$uri/', "${try_files}"],
 		}
 
 		$backend_port = 9000
@@ -57,7 +64,11 @@ class personal::nginx_config {
 		     location_cfg_append => {
 		       fastcgi_connect_timeout => '3m',
 		       fastcgi_read_timeout    => '3m',
-		       fastcgi_send_timeout    => '3m'
+		       fastcgi_send_timeout    => '3m',
+		       fastcgi_split_path_info => '^(.+\.php)(/.*)$',
+		       fastcgi_index => 'index.php',
+		       fastcgi_param => ['SCRIPT_FILENAME $request_filename'],
+		       'include' => 'fastcgi_params',
 		     },
 		   }
 		}
