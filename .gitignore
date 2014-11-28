@@ -1,8 +1,11 @@
 #let librarian puppet manage modules
-modules/*
+puppet/modules/*
+
+#hide production details
+prod
 
 #except custom configs
-!modules/personal
+!puppet/modules/personal
 
 #ignore generated code
 .vagrant

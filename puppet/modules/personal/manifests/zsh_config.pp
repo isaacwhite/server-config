@@ -3,7 +3,11 @@ class personal::zsh_config {
 	include $personal::params
 
 	# alias some params for easy access
-	$username = $personal::params::box_username
+	if $fqdn == 'GLaDOS-local' {
+		$username = $personal::params::box_username
+	} else {
+		$username = 'isaac'
+	}
 	$zsh_theme = $personal::params::zsh_theme
 	$zsh_filename = $personal::params::zsh_theme_filename
 
