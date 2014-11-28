@@ -19,7 +19,7 @@ mod 'puppetlabs-nodejs'
 mod 'puppetlabs-mysql'
 mod 'petems-swap_file'
 mod 'jfryman-nginx'
-mod 'example42-php'
+mod 'thias-php'
 mod 'acme-ohmyzsh'
 
 # A module from git
