@@ -11,7 +11,6 @@ class personal::php_config {
 	# to install the specific php version
 	class {'php::cli':
 		ensure => 'latest',
-		require => Class['personal::repo_config'],
 	}
 
 	php::fpm::conf { 'www':
