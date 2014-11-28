@@ -1,6 +1,8 @@
 class personal::php_config {
 
-	include php::fpm::daemon
+	class {'php::fpm::daemon':
+		subscribe => Package['php-mysql'],
+	}
 
 	php::ini { '/etc/php.ini':
 		display_errors => 'On',

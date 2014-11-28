@@ -18,7 +18,6 @@ class personal::mysql_config {
 
 	class {'::mysql::bindings':
 		php_enable => true,
-		notify => Service['php-fpm'],
 	}
 
 	class { 'mysql::client':
