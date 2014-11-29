@@ -2,7 +2,7 @@
 puppet/modules/*
 
 #hide production details
-prod
+prod/hiera.yaml
 
 #except custom configs
 !puppet/modules/personal
