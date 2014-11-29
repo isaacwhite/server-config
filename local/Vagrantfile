@@ -9,6 +9,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "puppetlabs/centos-6.5-64-puppet"
   config.vm.hostname = "GLaDOS-local"
+	config.hostsupdater.aliases = [
+		"local.isaacwhite.com",
+		"local.www.isaacwhite.com",
+		"local.mytimes.isaacwhite.com",
+		"local.scylla.isaacwhite.com",
+		"local.joshuarobertwhite.com",
+		"local.www.joshuarobertwhite.com",
+		"local.dev.joshuarobertwhite.com",
+		"local.solomonhoffman.com",
+		"local.www.solomonhoffman.com",
+		"local.dev.solomonhoffman.com"
+	]
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -45,6 +57,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provider :virtualbox do |vb|
     # Don't boot with headless mode
     vb.gui = false
+    vb.name = 'GLaDOS Local v1'
 
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--memory", "2048"]
