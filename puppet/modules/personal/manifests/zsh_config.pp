@@ -5,6 +5,12 @@ class personal::zsh_config {
 	# alias some params for easy access
 	if $fqdn == 'GLaDOS-local' {
 		$username = $personal::params::box_username
+
+		user {$username:
+			shell => '/bin/zsh',
+			require => Package['zsh'],
+		}
+
 	} else {
 		$username = 'isaac'
 
@@ -13,6 +19,7 @@ class personal::zsh_config {
 			password => '$6$4wsq.4tKNDF8wxCQ$3dGv4oWoHZN.o022CgxH2W.Ho2roE3/ggMyI2mR8Bell1esYaFuoruuhsbCZxWLPzgzcnlo5kNfDTDP9hC4De1',
 			managehome => true,
 			shell => '/bin/zsh',
+			require => Package['zsh'],
 		}
 	}
 
