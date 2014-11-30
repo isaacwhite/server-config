@@ -18,7 +18,6 @@ mod 'puppetlabs-git'
 mod 'puppetlabs-nodejs'
 mod 'puppetlabs-mysql'
 mod 'petems-swap_file'
-mod 'jfryman-nginx'
 mod 'thias-php'
 mod 'acme-ohmyzsh'
 
@@ -30,6 +29,9 @@ mod 'acme-ohmyzsh'
 # mod 'puppetlabs-apt',
 #   :git => 'https://github.com/puppetlabs/puppetlabs-apt.git',
 #   :ref => '1.4.x'
+mod 'jfryman-nginx',
+	:git => 'git@github.com:isaacwhite/puppet-nginx.git',
+	:ref => '0.2.1a'
 
 # A module from Github pre-packaged tarball
 # mod 'puppetlabs-apache', '0.6.0', :github_tarball => 'puppetlabs/puppetlabs-apache'

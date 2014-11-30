@@ -16,40 +16,49 @@ class personal::nginx_config {
 	) {
 
 		# allow for regular domains and subdomains.
-		if size($subdomain_of) > 0 {
+		$is_subdomain = size($subdomain_of) > 0
+
+		if $is_subdomain {
 			$host = $subdomain_of
 			$full_host = "${subdomain}.${subdomain_of}"
 			$www_root = "/var/www/${host}/subdomains/${subdomain}/public_html"
+			$redirect_to_www = false
 		} else {
 			$host = $host_param
 			$full_host = $host_param
 			$www_root = "/var/www/${host}/public_html"
+			$redirect_to_www = true
 		}
 
 		if $fqdn == 'GLaDOS-local' {
-			$with_env = "local.${full_host}"
+			$with_env = "sbx.${full_host}"
 		} else {
 			$with_env = $full_host
 		}
 
-		$www_host = "www.${with_env}"
-		# aliases
-		$aliases = concat([$with_env], $www_host)
-
-		if !$php {
-
-			nginx::resource::vhost { $full_host:
-				server_name => $aliases,
-				www_root => $www_root,
-			}
-
+		if $is_subdomain {
+			$aliases = [$with_env]
 		} else {
+			$aliases = ["www.${with_env}"]
+		}
 
-			nginx::resource::vhost { $full_host:
-				server_name => $aliases,
-				www_root => $www_root,
-				try_files => ['$uri', '$uri/', "/index.php\$is_args\$args" ],
-			}
+
+		if $php {
+			$try_files = ['$uri', '$uri/', "/index.php\$is_args\$args" ]
+		} else {
+			$try_files = undef
+		}
+
+
+		nginx::resource::vhost { $full_host:
+			server_name => $aliases,
+			www_root => $www_root,
+			try_files => $try_files,
+			rewrite_non_www_to_www => $redirect_to_www,
+		}
+
+
+		if $php {
 
 			nginx::resource::location { "${full_host}_php":
 				ensure          => present,

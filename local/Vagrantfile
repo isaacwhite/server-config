@@ -10,16 +10,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "puppetlabs/centos-6.5-64-puppet"
   config.vm.hostname = "GLaDOS-local"
 	config.hostsupdater.aliases = [
-		"local.isaacwhite.com",
-		"local.www.isaacwhite.com",
-		"local.mytimes.isaacwhite.com",
-		"local.scylla.isaacwhite.com",
-		"local.joshuarobertwhite.com",
-		"local.www.joshuarobertwhite.com",
-		"local.dev.joshuarobertwhite.com",
-		"local.solomonhoffman.com",
-		"local.www.solomonhoffman.com",
-		"local.dev.solomonhoffman.com"
+		"sbx.isaacwhite.com",
+		"www.sbx.isaacwhite.com",
+		"sbx.mytimes.isaacwhite.com",
+		"sbx.scylla.isaacwhite.com",
+		"sbx.joshuarobertwhite.com",
+		"www.sbx.joshuarobertwhite.com",
+		"sbx.dev.joshuarobertwhite.com",
+		"sbx.solomonhoffman.com",
+		"www.sbx.solomonhoffman.com",
+		"sbx.dev.solomonhoffman.com"
 	]
 
   # Create a forwarded port mapping which allows access to a specific port
