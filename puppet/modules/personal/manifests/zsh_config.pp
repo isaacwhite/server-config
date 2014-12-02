@@ -20,6 +20,16 @@ class personal::zsh_config {
 			managehome => true,
 			shell => '/bin/zsh',
 			require => Package['zsh'],
+			groups => 'wheel'
+		}
+
+		# make sure users in the wheel group have sudo access
+		file {'/etc/sudoers.d/01wheel':
+			ensure => present,
+			mode => 440,
+			owner => 'root',
+			group => 'root',
+			content => '%wheel ALL=(ALL)  ALL',
 		}
 	}
 

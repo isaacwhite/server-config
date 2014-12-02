@@ -19,6 +19,7 @@ mod 'puppetlabs-nodejs'
 mod 'puppetlabs-mysql'
 mod 'petems-swap_file'
 mod 'thias-php'
+mod 'puppetlabs-ntp'
 
 # A module from git
 # mod 'puppetlabs-ntp',
