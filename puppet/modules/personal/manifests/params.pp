@@ -60,16 +60,20 @@ class personal::params {
 
 	$dbs = {
 		'hoffman' => {
-			path => "${db_path}/hoffman.sql",
+			path => "${db_path}/hoffman_dev.sql",
+			unzip => true,
 		},
 		'mytimes' => {
 			path => "${db_path}/mytimes.sql",
+			unzip => true,
 		},
 		'scylla' => {
 			path => "${db_path}/scylla.sql",
+			unzip => true,
 		},
 		'jrw' => {
-			path => "${db_path}/jrw.sql",
+			path => "${db_path}/jrw_dev.sql",
+			unzip => true,
 		},
 	}
 }

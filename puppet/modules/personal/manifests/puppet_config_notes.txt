@@ -1,0 +1,40 @@
+resources definition
+
+specifies all domain configs to happen after packages and aws_syncs
+
+domain
+-> creates site for each vhost
+-> creates site for each subdomain
+
+site
+->Params
+	- site name
+	- database info
+	-
+-> database
+-> file extraction
+-> directories
+-> usernames / databases
+-> vhost
+-> git clones
+
+database
+-> filename
+-> username
+-> password
+-> db_name
+
+file extraction
+-> file source
+-> destination
+-> optional extraction type
+
+vhost
+(already exists)
+
+git clone
+(provided by vcs repo?)
+
+directories
+-> provided by puppet
+

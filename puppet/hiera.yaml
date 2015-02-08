@@ -1,7 +1,8 @@
 ---
 :backends: yaml
 :yaml:
-    :datadir: '/vagrant/puppet/manifests/'
+    :datadir: '/vagrant/'
 :hierarchy:
     - config
+    - private
 :logger: console

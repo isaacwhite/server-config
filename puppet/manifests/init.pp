@@ -1,9 +1,12 @@
-# make sure all repos are updated before packages everywhere.
-Yumrepo <| |> -> Package <| |>
-
-#some repos
-class {'::yum::repo::remi':}
-class {'::yum::repo::remi_php55':}
-
 #main class
 class {'personal':}
+
+# suppress an annoying warning. ugh.
+Package {
+	allow_virtual => false
+}
+
+# pull out hiera to test
+# $hiera_stuff = hiera('sample_value')
+
+# notify {$hiera_stuff: }

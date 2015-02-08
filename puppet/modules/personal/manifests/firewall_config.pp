@@ -16,6 +16,13 @@ class personal::firewall_config {
 		action  => 'accept',
 	}
 
+	firewall {'100 allow livereload:35729':
+		state => ['NEW'],
+		dport => '80',
+		proto => 'tcp',
+		action => 'accept',
+	}
+
 	firewall { '999 deny all others':
 		action => "drop",
 	}

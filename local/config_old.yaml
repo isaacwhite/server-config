@@ -1,0 +1,56 @@
+file_downloads:
+  mytimes_bin:
+    source: "/var/www/files/mytimes.tar.gz"
+    destination: "/var/www/isaacwhite.com/subdomains/mytimes/public_html/sites/default/"
+    type: "tar.gz"
+  mytimes_db:
+    source: "/var/www/dbs/mytimes.sql.gz"
+    destination: "/var/www/dbs/mytimes.sql"
+    type: "gzip"
+  scylla_db:
+    source: "/var/www/dbs/scylla.sql.gz"
+    destination: "/var/www/dbs/scylla.sql"
+    type: "gzip"
+  hoffman_dev_bin:
+    source: "/var/www/files/hoffman_dev.tar.gz"
+    destination: "/var/www/solomonhoffman.com/public_html/sites/default/"
+    type: "tar.gz"
+  hoffman_dev_db:
+    source: "/var/www/dbs/hoffman_dev.sql.gz"
+    destination: "/var/www/dbs/hoffman_dev.sql"
+    type: "gzip"
+  jrw_dev_bin:
+    source: "/var/www/files/jrw_dev.tar.gz"
+    destination: "/var/www/joshuarobertwhite.com/subdomains/dev/public_html/sites/default"
+    type: "tar.gz"
+  jrw_dev_db:
+    source: "/var/www/dbs/jrw_dev.sql.gz"
+    destination: "/var/www/dbs/jrw_dev.sql"
+    type: "gzip"
+repos:
+  isaacwhite.com:
+    url: "git@github.com:isaacwhite/isaacwhite.com.git"
+    branch: "master"
+    sitename: "isaacwhite.com"
+    dir: "/var/www/isaacwhite.com/public_html"
+  mytimes.isaacwhite.com:
+    url: "git@github.com:isaacwhite/mytimes.git"
+    branch: "master"
+    dir: "/var/www/isaacwhite.com/subdomains/mytimes/public_html"
+    sitename: "mytimes.isaacwhite.com"
+  solomonhoffman.com:
+    url: "no_url_yet"
+    branch: "master"
+    dir: "/var/www/solomonhoffman.com/public_html"
+  dev.solomonhoffman.com:
+    url: "git@github.com:isaacwhite/solomonhoffman.git"
+    branch: "master"
+    dir: "/var/www/solomonhoffman.com/subdomains/dev/public_html"
+  joshuarobertwhite.com:
+    url: "no_url_yet"
+    branch: ""
+    dir: "/var/www/joshuarobertwhite.com/public_html"
+  dev.joshuarobertwhite.com:
+    url: "git@github.com:isaacwhite/solomonhoffman.git"
+    branch: "jrw"
+    dir: "/var/www/joshuarobertwhite.com/subdomains/dev/public_html"
