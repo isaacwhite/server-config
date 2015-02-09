@@ -20,6 +20,7 @@ mod 'puppetlabs-mysql'
 mod 'petems-swap_file'
 mod 'thias-php'
 mod 'puppetlabs-ntp'
+mod 'puppetlabs-vcsrepo'
 
 # A module from git
 # mod 'puppetlabs-ntp',

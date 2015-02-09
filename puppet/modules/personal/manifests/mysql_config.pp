@@ -1,10 +1,11 @@
 class personal::mysql_config {
 
-	include $personal::params
+	$private = hiera('access')
+	$password = $private['mysql_admin']['password']
 
 	class { '::mysql::server':
-		root_password    => $personal::params::mysql_root,
-		package_ensure => $mysql_ver,
+		root_password    => $password,
+		package_ensure => 'latest',
 		require => Exec['mysql-community-repo'],
 	}
 
@@ -14,32 +15,7 @@ class personal::mysql_config {
 
 	class { 'mysql::client':
 	   package_name => 'mysql-community-client',
-	   package_ensure => $mysql_ver,
+	   package_ensure => 'latest',
 	   require => Exec['mysql-community-repo'],
    }
-
-	create_resources(mysql_db, $personal::params::dbs)
-
-	define mysql_db (
-		$database = $title,
-		$path,
-		$unzip = false,
-	) {
-		# if our database requires unzipping, do that first.
-		if $unzip {
-			exec {"gunzip -f ${path}.gz":
-				logoutput => true,
-				path => '/usr/bin',
-			}
-		}
-
-		mysql::db { $database:
-		  user     => $database,
-		  password => 'password',
-		  host     => 'localhost',
-		  grant    => ['ALL'],
-		  sql      => $path,
-		  import_timeout => 900,
-		}
-	}
 }

@@ -10,7 +10,6 @@ class personal::packages {
 	# bugfix for mysql install acting weird.
 	$rhel_mysql = 'http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm'
 	$indicator_file = '/.mysql-community-release'
-	$mysql_ver = 'latest'
 
 	exec { 'mysql-community-repo':
 	  command => "/usr/bin/yum -y --nogpgcheck install '${rhel_mysql}' && touch ${indicator_file}",
@@ -19,32 +18,32 @@ class personal::packages {
 
 	# mysql v5.6 seems to have issues,
 	# delete the repo and allow puppet to install latest via v5.5
-	yumrepo {'mysql56-community':
+	yumrepo { 'mysql56-community':
 		ensure => absent,
 	}
 
-	yumrepo {'mysql55-community':
+	yumrepo { 'mysql55-community':
 		enabled => true,
 	}
 
-	# =======================
-	# AWS
-	package {'python-pip':
-		ensure => present,
+	$present_packages = [
+		# aws dep
+		'python-pip',
+		# zsh dep
+		'git',
+		'zsh',
+		#  extraction dep
+		'gzip',
+		'tar',
+	]
 
+	package { $present_packages:
+		ensure => present,
 	}
 
-	package {'awscli':
+	package { 'awscli':
 		ensure => present,
 		provider => pip,
 		require => Package['python-pip'],
-	}
-
-	package {'gzip':
-		ensure => present,
-	}
-
-	package {'tar':
-		ensure => present,
 	}
 }
