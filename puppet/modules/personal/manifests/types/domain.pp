@@ -1,19 +1,24 @@
-define personal::types::domain (
+define personal::types::domain (	
 	$name = $title,
 	$subdomains,
 	$git,
 	$database,
-	$files,
+	$files
 	) {
+	include personal::types::site
 
 	$web_root = '/var/www/'
-	$domain_root = "${web_root}${title}"
-	$public = "${domain_root}/public_html"
-
-	$base_dirs = [$domain_root, $public]
-
-	file { $base_dirs:
+	
+	file { "${web_root}${name}":
 		ensure => directory,
 	}
+
+	site { $name:
+		git => $git,
+		database => $database,
+		files => $files,
+	}
+
+	
 	
 }

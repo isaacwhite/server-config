@@ -1,13 +1,13 @@
 define personal::types::database (
-		$database = $title,
-		$path,
+		$name,
+		$source
 ) {
 
 	include mysql
 
 	mysql::db { $database:
 	  user     => $database,
-	  password => 'password',
+	  password => $password,
 	  host     => 'localhost',
 	  grant    => ['ALL'],
 	  sql      => $path,

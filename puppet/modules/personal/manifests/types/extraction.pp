@@ -1,9 +1,10 @@
 define personal::types::extraction (
-		$source = $name,
-		$destination,
+		$root,
+		$path = "/sites/default",
 	) {
 
 	# allow both gzip and tar.gz
+	# grep 
 	if ($which == 'gzip') {
 		exec {"gunzip -c ${source} > ${destination}":
 			path => '/usr/bin',

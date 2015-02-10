@@ -1,31 +1,19 @@
 define personal::types::vhost (
-		$host_param = $title,
-		$subdomain_of = '',
-		$subdomain = 'dev',
+		$name = $title,
+		$path,
 		$php = false,
 	) {
 
-		# allow for regular domains and subdomains.
-		$is_subdomain = size($subdomain_of) > 0
-
-		if $is_subdomain {
-			$host = $subdomain_of
-			$full_host = "${subdomain}.${subdomain_of}"
-			$www_root = "/var/www/${host}/subdomains/${subdomain}/public_html"
-			$redirect_to_www = false
-		} else {
-			$host = $host_param
-			$full_host = $host_param
-			$www_root = "/var/www/${host}/public_html"
-			$redirect_to_www = true
-		}
-
+		# determine what to actually call this subdomain
 		if $fqdn == 'GLaDOS-local' {
-			$with_env = "sbx.${full_host}"
+			$with_env = "sbx.${name}"
 		} else {
-			$with_env = $full_host
+			$with_env = $name
 		}
 
+		# do a regex to see if it contains more 
+		# than one period instead of passing param
+		# $is_subdomain = 
 		if $is_subdomain {
 			$aliases = [$with_env]
 		} else {
@@ -33,27 +21,26 @@ define personal::types::vhost (
 		}
 
 
+		# depending on if we will be using php or not, adjust the try paths
 		if $php {
 			$try_files = ['$uri', '$uri/', "/index.php\$is_args\$args" ]
 		} else {
 			$try_files = undef
 		}
 
-
-		nginx::resource::vhost { $full_host:
+		nginx::resource::vhost { $name:
 			server_name => $aliases,
-			www_root => $www_root,
+			www_root => $path,
 			try_files => $try_files,
-			rewrite_non_www_to_www => $redirect_to_www,
+			rewrite_non_www_to_www => !$is_subdomain,
 		}
-
 
 		if $php {
 
-			nginx::resource::location { "${full_host}_php":
+			nginx::resource::location { "${name}_php":
 				ensure          => present,
 				vhost           => $full_host,
-				www_root        => $www_root,
+				www_root        => $path,
 				location        => '~ \.php$',
 				index_files     => ['index.php', 'index.html', 'index.htm'],
 				notify          => Class['nginx::service'],
