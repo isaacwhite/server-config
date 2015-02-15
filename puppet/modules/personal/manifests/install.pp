@@ -16,10 +16,6 @@ class personal::install {
 	include personal::files_config
 	# db installs
 	include personal::mysql_config
-
-	# mysql is dependent on existing files
-	Class['personal::files_config'] -> Class['personal::mysql_config']
-
-	# make sure all repos are updated before packages everywhere.
-	Yumrepo <| |> -> Package <| |>
+	# kick off domain configs
+	include personal::domain_config
 }

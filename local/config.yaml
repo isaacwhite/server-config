@@ -7,13 +7,14 @@ sites:
         git: "git@github.com:isaacwhite/isaacwhite.com.git"
         files:
           binary:
-            source: "mytimes.tar.gz"
+            source: "mytimes_files.tar.gz"
         database:
           name: "mytimes"
           source: "mytimes.sql.gz"
       scylla:
         git: ""
         database:
+          name: "scylla"
           source: "scylla.sql.gz"
 # info about solomonhoffman.com & subdomains 
   solomonhoffman.com:
@@ -23,7 +24,7 @@ sites:
         git: "git@github.com:isaacwhite/solomonhoffman.git"
         files:
           binary:
-            source: "hoffman_dev.tar.gz"
+            source: "hoffman_dev_files.tar.gz"
         database:
           name: "hoffman_dev"
           source: "hoffman_dev.sql.gz"
@@ -35,7 +36,7 @@ sites:
         git: ""
         files:
           binary:
-            source: "jrw_dev.tar.gz"
+            source: "jrw_dev_files.tar.gz"
         database:
           name: "jrw_dev"
           source: "jrw_dev.sql.gz"
@@ -45,3 +46,11 @@ sites:
     subdomains:
       dev:
         git: ""
+aws:
+  binary:
+    remote: "/files"
+    local: "/var/www/files"
+  databases:
+    remote: "/dbs"
+    local: "/var/www/dbs"
+

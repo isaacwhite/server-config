@@ -1,25 +1,25 @@
 define personal::types::vhost (
-		$name = $title,
+		$vhost_name = $title,
 		$path,
 		$php = false,
 	) {
 
 		# determine what to actually call this subdomain
 		if $fqdn == 'GLaDOS-local' {
-			$with_env = "sbx.${name}"
+			$with_env = "sbx.${vhost_name}"
 		} else {
-			$with_env = $name
+			$with_env = $vhost_name
 		}
 
-		# do a regex to see if it contains more 
+		# do a regex to see if it contains more
 		# than one period instead of passing param
-		# $is_subdomain = 
+		$is_subdomain = $vhost_name =~ /\S+\.\S+\.\S+/
+
 		if $is_subdomain {
 			$aliases = [$with_env]
 		} else {
 			$aliases = ["www.${with_env}"]
 		}
-
 
 		# depending on if we will be using php or not, adjust the try paths
 		if $php {
@@ -28,7 +28,7 @@ define personal::types::vhost (
 			$try_files = undef
 		}
 
-		nginx::resource::vhost { $name:
+		nginx::resource::vhost { $vhost_name:
 			server_name => $aliases,
 			www_root => $path,
 			try_files => $try_files,
@@ -37,9 +37,9 @@ define personal::types::vhost (
 
 		if $php {
 
-			nginx::resource::location { "${name}_php":
+			nginx::resource::location { "${vhost_name}_php":
 				ensure          => present,
-				vhost           => $full_host,
+				vhost           => $vhost_name,
 				www_root        => $path,
 				location        => '~ \.php$',
 				index_files     => ['index.php', 'index.html', 'index.htm'],

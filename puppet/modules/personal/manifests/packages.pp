@@ -1,9 +1,32 @@
 class personal::packages {
 
+	# make sure all repos are updated before packages everywhere.
+	Yumrepo <| |> -> Package <| |>
+
 	# PHP Packages
 	#some repos, make sure we can get the right version of php
-	class {'::yum::repo::remi':}
-	class {'::yum::repo::remi_php55':}
+	# class {'::yum::repo::remi':}
+	# class {'::yum::repo::remi_php55':}
+	yumrepo { 'remi-php55':
+	    descr          => 'Les RPM de remi pour Enterpise Linux $releasever - $basearch - PHP 5.5',
+	    mirrorlist     => 'http://rpms.famillecollet.com/enterprise/6/php55/mirror',
+	    enabled        => 1,
+	    priority => 1,
+	}
+
+	yumrepo { 'remi':
+	    descr          => 'Les RPM de remi pour Enterpise Linux $releasever - $basearch',
+	    mirrorlist     => 'http://rpms.famillecollet.com/enterprise/6/remi/mirror',
+	    enabled        => 1,
+	    priority       => 1,
+	}
+
+    yumrepo { 'remi-test':
+		descr          => 'Les RPM de remi pour Enterpise Linux $releasever - $basearch - Test',
+		mirrorlist     => 'http://rpms.famillecollet.com/enterprise/6/test/mirror',
+		enabled        => 0,
+		priority       => 1,
+	}
 
 	# =======================
 	# MySQL repos

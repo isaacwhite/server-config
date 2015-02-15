@@ -1,42 +1,50 @@
 define personal::types::site (
-		$name = $title,
-		$git,
-		$database,
-		$files,
-		$root,
+		$site_name = $title,
+		$git = undef,
+		$database = undef,
+		$files = undef,
+		$root = undef,
 	) {
 
 	$public = "${root}/public_html"
-	# a sensible default
-	$php = false
+	$required_dirs = [$root, $public]
 
-	file { $public:
+	file { $required_dirs:
 		ensure => directory,
 	}
 
 	# one git repo per site
 	if ($git) {
-		personal::types::git { $name:
-			remote => $git,
-			destination => $public,
+		notify {"${site_name} git creation stub":
+
 		}
+		# personal::types::git { $site_name:
+		# 	remote => $git,
+		# 	destination => $public,
+		# }
 	}
 
 	# one database per site
 	if ($database) {
-		$access = hiera('access')
-		personal::types::database { $database['name']:
-			source => $database['source'],
-		}
+
+		notify {"triggering database import for: ${database}": }
+		# personal::types::database { $database: }
 
 		$php = true
+	} else {
+		$php = false
 	}
 
 	if ($files) {
 		each($files) |$bucket_name, $values| {
 			# we need to loop through all files renaming them with the $name property
-			personal::types::extraction { "${name}${bucket_name}":
-				source => $values['source'],
+			$aws_config = hiera('aws')
+			$files_dir = $aws_config['binary']['local']
+			$filename = $values['source']
+			$source = "${files_dir}/${filename}"
+
+			personal::types::extraction { "${site_name}${bucket_name}":
+				source => $source,
 				destination => $public,
 				path => $values['path']
 			}
@@ -44,7 +52,7 @@ define personal::types::site (
 	}
 
 	# provide the nginx vhost for the site
-	personal::types::vhost { $name:
+	personal::types::vhost { $site_name:
 		php => $php,
 		path => $public,
 	}

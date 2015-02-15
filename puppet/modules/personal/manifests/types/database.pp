@@ -1,10 +1,10 @@
 define personal::types::database (
-		$name = $title,
+		$db_name = $title,
 		$user = $title,
-		$password,
+		$password = undef,
 		$source,
 		$path = '/var/www/dbs/'
-) {
+	) {
 
 	include mysql
 
@@ -12,19 +12,19 @@ define personal::types::database (
 		$import = regsubst($source, '.gz$', '')
 
 		# extract the file to the source path
-		personal::types::extraction { "${name} unzip":
+		personal::types::extraction { "${db_name} unzip":
 			source=> $source,
 			destination => $path,
 			path => '/.',
 		}
 
 	} else {
-		$import = $name
+		$import = $db_name
 	}
 
 	$import_path = "${path}${import}"
 
-	mysql::db { $name:
+	mysql::db { $db_name:
 	  user     => $user,
 	  password => $password,
 	  host     => 'localhost',
