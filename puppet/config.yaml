@@ -1,7 +1,7 @@
 sites:
 # info about isaacwhite.com & subdomains
   isaacwhite.com:
-    git: 
+    git:
       remote: "git@github.com:isaacwhite/isaacwhite.com.git"
     subdomains:
       mytimes:
@@ -14,7 +14,7 @@ sites:
           name: "mytimes"
           source: "mytimes.sql.gz"
       scylla:
-        git: 
+        git:
           remote: "git@github.com:isaacwhite/scylla.git"
         database:
           name: "scylla"
@@ -25,7 +25,7 @@ sites:
       remote: "git@github.com:isaacwhite/solomonhoffman.git"
     subdomains:
       dev:
-        git: 
+        git:
           remote: "git@github.com:isaacwhite/solomonhoffman.git"
           branch: "develop"
         files:
@@ -40,7 +40,7 @@ sites:
       remote: "git@bitbucket.org:isaacwhite/jrw.git"
     subdomains:
       dev:
-        git: 
+        git:
           remote: "git@bitbucket.org:isaacwhite/jrw.git"
           branch: "develop"
         files:

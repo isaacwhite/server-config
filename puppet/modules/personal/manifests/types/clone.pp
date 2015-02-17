@@ -5,9 +5,9 @@ define personal::types::clone (
 	) {
 
 	if $fqdn == 'GLaDOS-local' {
-		$gituser = 'vagrant'
+		$user = 'vagrant'
 	} else {
-		$gituser = 'isaac'
+		$user = 'isaac'
 	}
 
 	ensure_resource('file', 'user ssh folder', {
@@ -25,7 +25,7 @@ define personal::types::clone (
 		source => "puppet:///modules/personal/provision_rsa",
 	})
 
-	exec {"${title}: git clone into ${path}":
+	exec {"${title} git clone into ${path}":
 		command => "git clone ${repo} ${path}",
 		creates => "${path}/.git",
 		path => '/usr/bin',
@@ -34,10 +34,10 @@ define personal::types::clone (
 			File['deployer private key'],
 			File['deployer public key'],
 		],
-		user => $gituser,
+		user => $user,
 	}
 
-	exec {"${title}: git checkout ${branch} @ ${path}":
+	exec {"${title} git checkout ${branch} at ${path}":
 		command => "git checkout ${branch}",
 		onlyif => "test \"git rev-parse --abbrev-ref HEAD\" != \"${branch}\"",
 		path => '/user/bin',
@@ -46,7 +46,7 @@ define personal::types::clone (
 			File['deployer private key'],
 			File['deployer public key'],
 		],
-		user => $gituser,
+		user => $user,
 		cwd => $path,
 	}
 }

@@ -1,8 +1,10 @@
 #let librarian puppet manage modules
 puppet/modules/*
 
-#hide production details
-prod/hiera.yaml
+# hide private details
+puppet/private.yaml
+# hide provisioner keys
+puppet/modules/personal/files/provision*
 
 #except custom configs
 !puppet/modules/personal

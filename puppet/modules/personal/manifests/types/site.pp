@@ -17,20 +17,20 @@ define personal::types::site (
 	}
 
 	# one git repo per site
-	if $git {
+	if ($git) {
 
 		$remote = $git['remote']
 		$branch = $git['branch']
 		
 		personal::types::clone { $site_name:
-			repo => $git,
-			branch => $git_branch,
+			repo => $remote,
+			branch => $branch,
 			path => $public,
 		}
 	}
 
 	# one database per site
-	if $database {
+	if ($database) {
 		# do php configs
 		$php = true
 
