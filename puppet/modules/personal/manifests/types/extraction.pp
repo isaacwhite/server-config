@@ -2,14 +2,15 @@ define personal::types::extraction (
 		$source = $title,
 		$destination,
 		$path = "/sites/default",
+		$filename = '',
 	) {
 
 	$output_dir = "${destination}${path}"
 
-	file {$output_dir:
+	ensure_resource('file', $output_dir, {
 		ensure => directory,
-		mode => '775',
-	}
+		mode => '775',	
+	})
 
 	# allow both gzip and tar.gz
 	# grep 
@@ -24,7 +25,8 @@ define personal::types::extraction (
 	} 
 
 	elsif (".gz" in $source) {
-		exec {"gunzip -c ${source} > ${output_dir}":
+		$extract_to = "${output_dir}${filename}"
+		exec {"gunzip -c ${source} > ${extract_to}":
 			path => '/usr/bin',
 			require => [
 				Package['gzip'],

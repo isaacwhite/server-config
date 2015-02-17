@@ -6,7 +6,7 @@ class personal::zsh_config {
 
 	# alias some params for easy access
 	if $fqdn == 'GLaDOS-local' {
-		$username = $personal::params::box_username
+		$username = 'vagrant'
 
 		user {$username:
 			shell => '/bin/zsh',
@@ -35,9 +35,8 @@ class personal::zsh_config {
 		}
 	}
 
-	$zsh_theme = $personal::params::zsh_theme
-	$zsh_filename = $personal::params::zsh_theme_filename
-
+	$zsh_theme = 'amuse_custom'
+	$zsh_filename = "${zsh_theme}.zsh-theme"
 	$user_folder = "/home/${username}/.oh-my-zsh"
 
 	# the ohmyzsh module doesn't seem to work properly,

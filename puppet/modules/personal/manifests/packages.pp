@@ -3,27 +3,31 @@ class personal::packages {
 	# make sure all repos are updated before packages everywhere.
 	Yumrepo <| |> -> Package <| |>
 
-	# PHP Packages
+	# support items like python pip
+	include epel
 	#some repos, make sure we can get the right version of php
-	# class {'::yum::repo::remi':}
-	# class {'::yum::repo::remi_php55':}
+	$remi_gpg_key = 'http://rpms.famillecollet.com/RPM-GPG-KEY-remi'
+
 	yumrepo { 'remi-php55':
-	    descr          => 'Les RPM de remi pour Enterpise Linux $releasever - $basearch - PHP 5.5',
 	    mirrorlist     => 'http://rpms.famillecollet.com/enterprise/6/php55/mirror',
+	    gpgkey         => $remi_gpg_key,
+	    gpgcheck  	   => 1,
 	    enabled        => 1,
 	    priority => 1,
 	}
 
 	yumrepo { 'remi':
-	    descr          => 'Les RPM de remi pour Enterpise Linux $releasever - $basearch',
 	    mirrorlist     => 'http://rpms.famillecollet.com/enterprise/6/remi/mirror',
+	    gpgkey         => $remi_gpg_key,
+	    gpgcheck  	   => 1,
 	    enabled        => 1,
 	    priority       => 1,
 	}
 
     yumrepo { 'remi-test':
-		descr          => 'Les RPM de remi pour Enterpise Linux $releasever - $basearch - Test',
 		mirrorlist     => 'http://rpms.famillecollet.com/enterprise/6/test/mirror',
+		gpgkey         => $remi_gpg_key,
+	    gpgcheck  	   => 1,
 		enabled        => 0,
 		priority       => 1,
 	}
@@ -49,19 +53,41 @@ class personal::packages {
 		enabled => true,
 	}
 
+	# make sure we have the repo for recent nginx releases
+	yumrepo {'nginx-release':
+      baseurl  => "http://nginx.org/packages/rhel/6/x86_64/",
+      descr    => 'nginx repo',
+      enabled  => '1',
+      gpgcheck => '1',
+      priority => '1',
+      gpgkey   => 'http://nginx.org/keys/nginx_signing.key',
+    }
+
+    file { '/etc/yum.repos.d/nginx-release.repo':
+      ensure  => present,
+      require => Yumrepo['nginx-release'],
+    }
+
 	$present_packages = [
 		# aws dep
-		'python-pip',
+		'python-setuptools',
 		# zsh dep
 		'git',
 		'zsh',
 		#  extraction dep
 		'gzip',
 		'tar',
+		'nginx',
+		'vim'
 	]
 
 	package { $present_packages:
 		ensure => present,
+	}
+
+	package {'python-pip':
+		ensure => present,
+		require => Package['python-setuptools'],
 	}
 
 	package { 'awscli':

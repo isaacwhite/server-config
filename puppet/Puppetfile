@@ -21,6 +21,7 @@ mod 'petems-swap_file'
 mod 'thias-php'
 mod 'puppetlabs-ntp'
 mod 'puppetlabs-vcsrepo'
+mod 'stahnma-epel'
 
 # A module from git
 # mod 'puppetlabs-ntp',

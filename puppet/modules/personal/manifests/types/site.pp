@@ -4,6 +4,7 @@ define personal::types::site (
 		$database = undef,
 		$files = undef,
 		$root = undef,
+		$auth = undef,
 	) {
 
 	$public = "${root}/public_html"
@@ -15,22 +16,42 @@ define personal::types::site (
 
 	# one git repo per site
 	if ($git) {
-		notify {"${site_name} git creation stub":
 
+		$remote = $git['remote']
+		$branch = $git['branch']
+		
+		personal::types::clone { $site_name:
+			repo => $git,
+			branch => $git_branch,
+			path => $public,
 		}
-		# personal::types::git { $site_name:
-		# 	remote => $git,
-		# 	destination => $public,
-		# }
 	}
 
 	# one database per site
 	if ($database) {
-
-		notify {"triggering database import for: ${database}": }
-		# personal::types::database { $database: }
-
+		# do php configs
 		$php = true
+
+		# pull out private data for database creation
+		$access = hiera('access')
+		$db_name = $database['name']
+		$db_password = $access['databases'][$db_name]['password']
+		$drupal_hash = $access['drupal']['hash']
+
+		# create the db import
+		personal::types::database { $database['name']:
+			source => $database['source'],
+			password => $db_password,
+		}
+
+		# save database connection settings after git clone done
+		file { "${public}/sites/default/settings.php":
+			ensure => file,
+			mode => '440',
+			content => template('personal/settings_php'),
+			require => Personal::Types::Clone[$site_name]
+		}
+
 	} else {
 		$php = false
 	}
@@ -51,9 +72,11 @@ define personal::types::site (
 		}
 	}
 
+
 	# provide the nginx vhost for the site
 	personal::types::vhost { $site_name:
 		php => $php,
 		path => $public,
+		auth => $auth,
 	}
 }

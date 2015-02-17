@@ -1,7 +1,10 @@
 define personal::types::vhost (
 		$vhost_name = $title,
 		$path,
+		$deny_hidden = true,
+		$gzip = true,
 		$php = false,
+		$auth = false,
 	) {
 
 		# determine what to actually call this subdomain
@@ -14,49 +17,32 @@ define personal::types::vhost (
 		# do a regex to see if it contains more
 		# than one period instead of passing param
 		$is_subdomain = $vhost_name =~ /\S+\.\S+\.\S+/
+		$redirect_to_www = !$is_subdomain
 
+		# if we're a subdomain, we should do another substitution here
 		if $is_subdomain {
-			$aliases = [$with_env]
+			$server_name = $with_env
+			# take out the subdomain string and period
+			$parent_domain = regsubst($vhost_name, "^\S+\.", "")
 		} else {
-			$aliases = ["www.${with_env}"]
+			$server_name = "www.${with_env}"
 		}
 
-		# depending on if we will be using php or not, adjust the try paths
-		if $php {
-			$try_files = ['$uri', '$uri/', "/index.php\$is_args\$args" ]
-		} else {
-			$try_files = undef
+		file { "${vhost_name} vhost":
+			path => '/etc/nginx/sites-available/${vhost_name}',
+			ensure => file,
+			require => Package['nginx'],
+			content => template('personal/nginx_vhost'),
 		}
 
-		nginx::resource::vhost { $vhost_name:
-			server_name => $aliases,
-			www_root => $path,
-			try_files => $try_files,
-			rewrite_non_www_to_www => !$is_subdomain,
-		}
-
-		if $php {
-
-			nginx::resource::location { "${vhost_name}_php":
-				ensure          => present,
-				vhost           => $vhost_name,
-				www_root        => $path,
-				location        => '~ \.php$',
-				index_files     => ['index.php', 'index.html', 'index.htm'],
-				notify          => Class['nginx::service'],
-				proxy           => undef,
-				fastcgi         => "127.0.0.1:9000",
-				fastcgi_script  => undef,
-				location_cfg_append => {
-					fastcgi_connect_timeout => '3m',
-					fastcgi_read_timeout    => '3m',
-					fastcgi_send_timeout    => '3m',
-					fastcgi_split_path_info => '^(.+\.php)(/.*)$',
-					fastcgi_index => 'index.php',
-					fastcgi_param => ['SCRIPT_FILENAME $request_filename'],
-					'include' => 'fastcgi_params',
-				},
-		   }
-
+		# Symlink our vhost in sites-enabled to enable it
+		file { "${vhost_name} vhost enable":
+			path => '/etc/nginx/sites-enabled/${vhost_name}',
+			target => '/etc/nginx/sites-available/${vhost_name}',
+			ensure => link,
+			notify => Service['nginx'],
+			require => [
+				File["${vhost_name} vhost"],
+			],
 		}
 	}

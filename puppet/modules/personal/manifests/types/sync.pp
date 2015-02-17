@@ -23,10 +23,10 @@ define personal::types::sync (
 		$to = "${s3_prefix}${remote}"
 	}
 
-	file {$local:
+	ensure_resource('file', $local, {
 		ensure => directory,
-		mode => '755',
-	}
+		mode => '775',
+	})
 
 	# download from s3
 	exec {"aws s3 sync ${from} ${to}":

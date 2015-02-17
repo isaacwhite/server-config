@@ -6,16 +6,16 @@ define personal::types::database (
 		$path = '/var/www/dbs/'
 	) {
 
-	include mysql
-
 	if (".gz" in $source) {
 		$import = regsubst($source, '.gz$', '')
 
 		# extract the file to the source path
 		personal::types::extraction { "${db_name} unzip":
-			source=> $source,
+			source => "${path}${source}",
 			destination => $path,
-			path => '/.',
+			filename => $import,
+			path => '',
+			notify => Mysql::Db[$db_name],
 		}
 
 	} else {
