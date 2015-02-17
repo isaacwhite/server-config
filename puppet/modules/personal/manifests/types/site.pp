@@ -4,18 +4,20 @@ define personal::types::site (
 		$database = undef,
 		$files = undef,
 		$root = undef,
-		$auth = undef,
 	) {
 
 	$public = "${root}/public_html"
 	$required_dirs = [$root, $public]
+	# pull out any required private data
+	$access = hiera('access')
+	$auth = $access['auth'][$site_name]
 
 	file { $required_dirs:
 		ensure => directory,
 	}
 
 	# one git repo per site
-	if ($git) {
+	if $git {
 
 		$remote = $git['remote']
 		$branch = $git['branch']
@@ -28,12 +30,11 @@ define personal::types::site (
 	}
 
 	# one database per site
-	if ($database) {
+	if $database {
 		# do php configs
 		$php = true
 
 		# pull out private data for database creation
-		$access = hiera('access')
 		$db_name = $database['name']
 		$db_password = $access['databases'][$db_name]['password']
 		$drupal_hash = $access['drupal']['hash']
@@ -56,7 +57,7 @@ define personal::types::site (
 		$php = false
 	}
 
-	if ($files) {
+	if $files {
 		each($files) |$bucket_name, $values| {
 			# we need to loop through all files renaming them with the $name property
 			$aws_config = hiera('aws')

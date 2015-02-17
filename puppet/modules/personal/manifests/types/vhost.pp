@@ -4,14 +4,16 @@ define personal::types::vhost (
 		$deny_hidden = true,
 		$gzip = true,
 		$php = false,
-		$auth = false,
+		$auth = undef,
 	) {
 
 		# determine what to actually call this subdomain
 		if $fqdn == 'GLaDOS-local' {
 			$with_env = "sbx.${vhost_name}"
+			$username = 'vagrant'
 		} else {
 			$with_env = $vhost_name
+			$username = 'isaac'
 		}
 
 		# do a regex to see if it contains more
@@ -28,21 +30,58 @@ define personal::types::vhost (
 			$server_name = "www.${with_env}"
 		}
 
+		if $auth {
+			$auth_user = $auth['user']
+			$auth_pass = $auth['password']
+
+			exec { "create htpasswd for ${vhost_name}":
+				command => "printf \"${auth_user}:$(openssl passwd -crypt ${auth_pass})\n\" >> .htpasswd",
+				creates => "${path}/.htaccess",
+				path => 'usr/bin',
+				require => [
+					Personal::Types::Clone[$vhost_name],
+					Package['openssl'],
+				],
+				cwd => $path,
+			}
+		}
+
 		file { "${vhost_name} vhost":
-			path => '/etc/nginx/sites-available/${vhost_name}',
 			ensure => file,
-			require => Package['nginx'],
 			content => template('personal/nginx_vhost'),
+			path => "/etc/nginx/sites-available/${vhost_name}",
+			require => Package['nginx'],
 		}
 
 		# Symlink our vhost in sites-enabled to enable it
 		file { "${vhost_name} vhost enable":
+			ensure => link,
 			path => '/etc/nginx/sites-enabled/${vhost_name}',
 			target => '/etc/nginx/sites-available/${vhost_name}',
-			ensure => link,
 			notify => Service['nginx'],
 			require => [
 				File["${vhost_name} vhost"],
 			],
 		}
+
+		file { "sites symlink ${vhost_name}":
+			ensure => link,
+			path => "/home/${username}/sites/${vhost_name}",
+			target => "/etc/nginx/sites-available/${vhost_name}",
+			require => [
+				File['user sites dir'],
+				File["${vhost_name} vhost"],
+			]
+		}
+
+		ensure_resource('file', 'user sites dir', {
+			path => "/home/${username}/sites",
+			ensure => directory,
+		})
+
+		ensure_resource('file', 'user vhosts dir', {
+			ensure => link,
+			path => "/home/${username}/nginx_config",
+			target => '/etc/nginx/sites-available',
+		})
 	}

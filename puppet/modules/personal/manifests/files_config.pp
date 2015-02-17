@@ -9,5 +9,7 @@ class personal::files_config {
 	if ($syncs) {
 		create_resources(personal::types::sync, $syncs)
 	}
+
+	# we should also condsider setting up the backup script here at some point
 	
 }

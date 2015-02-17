@@ -78,7 +78,8 @@ class personal::packages {
 		'gzip',
 		'tar',
 		'nginx',
-		'vim'
+		'vim',
+		'openssl',
 	]
 
 	package { $present_packages:

@@ -9,6 +9,13 @@ define personal::types::database (
 	if (".gz" in $source) {
 		$import = regsubst($source, '.gz$', '')
 
+		schedule {'twice daily':
+			period => 'daily',
+			repeat => 2,
+			periodmatch => 'distance',
+		}
+
+		# don't do this too frequently for the same box
 		# extract the file to the source path
 		personal::types::extraction { "${db_name} unzip":
 			source => "${path}${source}",
@@ -16,6 +23,7 @@ define personal::types::database (
 			filename => $import,
 			path => '',
 			notify => Mysql::Db[$db_name],
+			schedule => 'twice daily',
 		}
 
 	} else {
