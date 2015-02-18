@@ -22,5 +22,5 @@ class personal::php_config {
 		require => Package['nginx'],
 	}
 
-	php::module { [ 'pdo', 'gd' ]: }
+	php::module { [ 'pdo' ]: }
 }

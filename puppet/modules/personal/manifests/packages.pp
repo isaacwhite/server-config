@@ -79,7 +79,9 @@ class personal::packages {
 		'tar',
 		'nginx',
 		'openssl',
+		'libpng',
 	]
+
 
 	package { $present_packages:
 		ensure => present,
@@ -94,5 +96,13 @@ class personal::packages {
 		ensure => present,
 		provider => pip,
 		require => Package['python-pip'],
+	}
+
+	package {'php-gd':
+		ensure => present,
+		require => [
+			Package['php-common'],
+			Package['libpng'],
+		],
 	}
 }
