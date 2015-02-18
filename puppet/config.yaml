@@ -21,7 +21,7 @@ sites:
           source: "scylla.sql.gz"
 # info about solomonhoffman.com & subdomains 
   solomonhoffman.com:
-    git: 
+    git:
       remote: "git@github.com:isaacwhite/solomonhoffman.git"
     subdomains:
       dev:
@@ -36,7 +36,7 @@ sites:
           source: "hoffman_dev.sql.gz"
 # info about joshuarobertwhite.com & subdomains
   joshuarobertwhite.com:
-    git: 
+    git:
       remote: "git@bitbucket.org:isaacwhite/jrw.git"
     subdomains:
       dev:

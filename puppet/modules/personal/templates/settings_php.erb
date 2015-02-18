@@ -215,9 +215,9 @@ $databases = array (
   array (
     'default' =>
     array (
-      'database' => <% @db_name %>,
-      'username' => <% @db_name %>,
-      'password' => <% @db_password %>,
+      'database' => '<%= @db_name %>',
+      'username' => '<%= @db_name %>',
+      'password' => '<%= @db_password %>',
       'host' => '127.0.0.1',
       'driver' => 'mysql',
       'prefix' => '',
@@ -255,7 +255,7 @@ $update_free_access = FALSE;
  *   $drupal_hash_salt = file_get_contents('/home/example/salt.txt');
  *
  */
-$drupal_hash_salt = <% @drupal_hash %>;
+$drupal_hash_salt = '<%= @drupal_hash %>';
 
 /**
  * Base URL (optional).

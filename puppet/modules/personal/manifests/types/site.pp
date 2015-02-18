@@ -23,8 +23,8 @@ define personal::types::site (
 		$branch = $git['branch']
 		
 		personal::types::clone { $site_name:
-			repo => $remote,
-			branch => $branch,
+			remote => $git['remote'],
+			branch => $git['branch'],
 			path => $public,
 		}
 	}
@@ -49,7 +49,7 @@ define personal::types::site (
 		file { "${public}/sites/default/settings.php":
 			ensure => file,
 			mode => '440',
-			content => template('personal/settings_php'),
+			content => template('personal/settings_php.erb'),
 			require => Personal::Types::Clone[$site_name]
 		}
 
@@ -65,10 +65,11 @@ define personal::types::site (
 			$filename = $values['source']
 			$source = "${files_dir}/${filename}"
 
-			personal::types::extraction { "${site_name}${bucket_name}":
+			personal::types::extraction { "${site_name} ${bucket_name}":
 				source => $source,
 				destination => $public,
-				path => $values['path']
+				path => $values['path'],
+				require => Personal::Types::Clone[$site_name]
 			}
 		}
 	}

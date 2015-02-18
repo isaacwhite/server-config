@@ -9,11 +9,11 @@ define personal::types::database (
 	if (".gz" in $source) {
 		$import = regsubst($source, '.gz$', '')
 
-		schedule {'twice daily':
+		ensure_resource('schedule', 'twice daily', {
 			period => 'daily',
 			repeat => 2,
 			periodmatch => 'distance',
-		}
+		})
 
 		# don't do this too frequently for the same box
 		# extract the file to the source path

@@ -25,7 +25,7 @@ define personal::types::vhost (
 		if $is_subdomain {
 			$server_name = $with_env
 			# take out the subdomain string and period
-			$parent_domain = regsubst($vhost_name, "^\S+\.", "")
+			$parent_domain = regsubst($vhost_name, "^/S+/.", "")
 		} else {
 			$server_name = "www.${with_env}"
 		}
@@ -48,7 +48,7 @@ define personal::types::vhost (
 
 		file { "${vhost_name} vhost":
 			ensure => file,
-			content => template('personal/nginx_vhost'),
+			content => template('personal/nginx_vhost.erb'),
 			path => "/etc/nginx/sites-available/${vhost_name}",
 			require => Package['nginx'],
 		}
@@ -56,8 +56,8 @@ define personal::types::vhost (
 		# Symlink our vhost in sites-enabled to enable it
 		file { "${vhost_name} vhost enable":
 			ensure => link,
-			path => '/etc/nginx/sites-enabled/${vhost_name}',
-			target => '/etc/nginx/sites-available/${vhost_name}',
+			path => "/etc/nginx/sites-enabled/${vhost_name}",
+			target => "/etc/nginx/sites-available/${vhost_name}",
 			notify => Service['nginx'],
 			require => [
 				File["${vhost_name} vhost"],
@@ -67,7 +67,7 @@ define personal::types::vhost (
 		file { "sites symlink ${vhost_name}":
 			ensure => link,
 			path => "/home/${username}/sites/${vhost_name}",
-			target => "/etc/nginx/sites-available/${vhost_name}",
+			target => $path,
 			require => [
 				File['user sites dir'],
 				File["${vhost_name} vhost"],

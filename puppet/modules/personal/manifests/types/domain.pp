@@ -27,16 +27,37 @@ define personal::types::domain (
 		}
 
 		# now we need to loop through subdomains, processing each of their names to account for parent
-		each($subdomains) |$subdomain_name, $values| {
+		if is_hash($subdomains) {
 
-			# create a site for each one placing the root
-			# inside the parent site root
-			personal::types::site { "${subdomain_name}.${domain_name}":
-				git => $values['git'],
-				database => $values['database'],
-				files => $values['files'],
-				root => "${subdomain_path}${subdomain_name}",
-				require => Personal::Types::Site[$domain_name],
+			each($subdomains) |$subdomain_name, $obj| {
+
+
+				# $git_config = undef
+				if is_hash($obj) {
+
+					$git_config = $obj["git"]
+					$db_config = $obj["database"]
+					# $db_config = undef
+
+					# create a site for each one placing the root
+					# inside the parent site root
+					personal::types::site { "${subdomain_name}.${domain_name}":
+						git => $git_config,
+						database => $db_config,
+						files => $obj['files'],
+						root => "${subdomain_path}${subdomain_name}",
+						require => Personal::Types::Site[$domain_name],
+					}
+					
+				} else {
+					notify {"subdomain ${subdomain_name} for ${domain_name} is not a hash!": 
+						loglevel => 'warning',
+					}
+				}
+			}
+		} else {
+			notify {"subdomain for ${domain_name} is not a hash!": 
+				loglevel => 'warning',
 			}
 		}
 	}
