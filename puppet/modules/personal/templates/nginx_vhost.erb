@@ -21,14 +21,14 @@
 <% if @redirect_to_www %>
 server {
         listen 80;
-        server_name <%= @vhost_name %>;
-        return 301 http://<%= @with_env %>$request_uri;
+        server_name <%= @with_env %>;
+        return 301 http://<%= @server_name %>$request_uri;
 }
 <% end %>
 
 server {
         listen 80;
-        server_name <%= @with_env %>;
+        server_name <%= @server_name %>;
         root <%= @path %>; ## Your only path reference.
         
         <% if !@php %>

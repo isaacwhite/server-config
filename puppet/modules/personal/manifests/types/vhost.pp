@@ -25,7 +25,7 @@ define personal::types::vhost (
 		if $is_subdomain {
 			$server_name = $with_env
 			# take out the subdomain string and period
-			$parent_domain = regsubst($vhost_name, "^/S+/.", "")
+			$parent_domain = regsubst($with_env, "^/S+/.", "")
 		} else {
 			$server_name = "www.${with_env}"
 		}
@@ -50,7 +50,11 @@ define personal::types::vhost (
 			ensure => file,
 			content => template('personal/nginx_vhost.erb'),
 			path => "/etc/nginx/sites-available/${vhost_name}",
-			require => Package['nginx'],
+			require => [
+				Package['nginx'],
+				File['sites_available'],
+			],
+			notify => Service['nginx'],
 		}
 
 		# Symlink our vhost in sites-enabled to enable it
@@ -61,6 +65,7 @@ define personal::types::vhost (
 			notify => Service['nginx'],
 			require => [
 				File["${vhost_name} vhost"],
+				File['sites_enabled'],
 			],
 		}
 
@@ -83,5 +88,6 @@ define personal::types::vhost (
 			ensure => link,
 			path => "/home/${username}/nginx_config",
 			target => '/etc/nginx/sites-available',
+			require => File['sites_available'],
 		})
 	}
