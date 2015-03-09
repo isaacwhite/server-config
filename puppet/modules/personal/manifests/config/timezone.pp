@@ -1,4 +1,4 @@
-class personal::timezone {
+class personal::config::timezone {
 
 	# make sure to sync with time servers
 	include '::ntp'

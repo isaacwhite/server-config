@@ -1,21 +1,21 @@
 class personal::install {
 
 	# sets up packages for other classes
-	include personal::packages
+	include personal::config::packages
 	# set timezone to EST
-	include personal::timezone
+	include personal::config::timezone
 	# provide zsh default shell
-	include personal::zsh_config
+	include personal::config::zsh
 	# firewall rules
-	include personal::firewall_config
+	include personal::config::firewall
 	# vhosts / server config
-	include personal::nginx_config
-	# php
-	include personal::php_config
-	# files (binary and dbs)
-	include personal::files_config
-	# db installs
-	include personal::mysql_config
-	# kick off domain configs
-	include personal::domain_config
+	include personal::config::nginx
+	# # php
+	include personal::config::php
+	# # files (binary and dbs)
+	include personal::config::files
+	# # db installs
+	include personal::config::mysql
+	# # kick off domain configs
+	include personal::config::domains
 }

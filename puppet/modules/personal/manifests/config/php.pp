@@ -1,4 +1,4 @@
-class personal::php_config {
+class personal::config::php {
 
 	class {'php::fpm::daemon':
 		subscribe => Package['php-mysql'],

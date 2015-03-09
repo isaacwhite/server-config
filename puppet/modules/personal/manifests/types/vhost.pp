@@ -8,12 +8,11 @@ define personal::types::vhost (
 	) {
 
 		# determine what to actually call this subdomain
-		if $fqdn == 'GLaDOS-local' {
-			$with_env = "sbx.${vhost_name}"
-			$username = 'vagrant'
-		} else {
-			$with_env = $vhost_name
-			$username = 'isaac'
+		$username = $personal::params::username
+		$with_env = $vm_environment ? {
+			'sandbox' => "sbx.${vhost_name}",
+			'staging' => "stg.${vhost_name}",
+			default => $vhost_name,
 		}
 
 		# do a regex to see if it contains more
@@ -23,9 +22,15 @@ define personal::types::vhost (
 
 		# if we're a subdomain, we should do another substitution here
 		if $is_subdomain {
-			$server_name = $with_env
 			# take out the subdomain string and period
-			$parent_domain = regsubst($with_env, "^/S+/.", "")
+			$without_sub = regsubst($vhost_name, '^\w+\.', "")
+			$parent_domain = $vm_environment ? {
+				'sandbox' => "sbx.${without_sub}",
+				'staging' => "stg.${without_sub}",
+				default => $without_sub,
+			}
+			# don't add www
+			$server_name = $with_env
 		} else {
 			$server_name = "www.${with_env}"
 		}
@@ -50,6 +55,9 @@ define personal::types::vhost (
 			ensure => file,
 			content => template('personal/nginx_vhost.erb'),
 			path => "/etc/nginx/sites-available/${vhost_name}",
+			mode => '755',
+			owner => $username,
+			group => 'nginx',
 			require => [
 				Package['nginx'],
 				File['sites_available'],
@@ -62,6 +70,9 @@ define personal::types::vhost (
 			ensure => link,
 			path => "/etc/nginx/sites-enabled/${vhost_name}",
 			target => "/etc/nginx/sites-available/${vhost_name}",
+			mode => '755',
+			owner => $username,
+			group => 'nginx',
 			notify => Service['nginx'],
 			require => [
 				File["${vhost_name} vhost"],
@@ -73,6 +84,8 @@ define personal::types::vhost (
 			ensure => link,
 			path => "/home/${username}/sites/${vhost_name}",
 			target => $path,
+			mode => '755',
+			owner => $username,
 			require => [
 				File['user sites dir'],
 				File["${vhost_name} vhost"],
@@ -80,14 +93,18 @@ define personal::types::vhost (
 		}
 
 		ensure_resource('file', 'user sites dir', {
-			path => "/home/${username}/sites",
 			ensure => directory,
+			path => "/home/${username}/sites",
+			mode => '755',
+			owner => $username,
 		})
 
 		ensure_resource('file', 'user vhosts dir', {
 			ensure => link,
 			path => "/home/${username}/nginx_config",
 			target => '/etc/nginx/sites-available',
+			mode => '755',
+			owner => $username,
 			require => File['sites_available'],
 		})
 	}

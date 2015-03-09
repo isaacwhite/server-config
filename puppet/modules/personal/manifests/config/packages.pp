@@ -1,4 +1,4 @@
-class personal::packages {
+class personal::config::packages {
 
 	# make sure all repos are updated before packages everywhere.
 	Yumrepo <| |> -> Package <| |>
@@ -80,6 +80,7 @@ class personal::packages {
 		'nginx',
 		'openssl',
 		'libpng',
+		'vim-enhanced',
 	]
 
 

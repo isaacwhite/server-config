@@ -1,3 +1,10 @@
 class personal::params {
-	# Nothing here anymore :)
+	
+	# provide a user based on environment
+	$username = $vm_environment ? {	
+		'staging' => 'isaac',
+		'production' => 'isaac',
+		default =>'vagrant',
+	}
+
 }

@@ -6,14 +6,19 @@ define personal::types::site (
 		$root = undef,
 	) {
 
+	$username = $personal::params::username
+
 	$public = "${root}/public_html"
 	$required_dirs = [$root, $public]
 	# pull out any required private data
-	$access = hiera('access')
+	$access = hiera_hash('access')
 	$auth = $access['auth'][$site_name]
 
 	file { $required_dirs:
 		ensure => directory,
+		owner => $username,
+		group => 'nginx',
+		mode => '0775',
 	}
 
 	# one git repo per site
@@ -48,9 +53,14 @@ define personal::types::site (
 		# save database connection settings after git clone done
 		file { "${public}/sites/default/settings.php":
 			ensure => file,
-			mode => '440',
 			content => template('personal/settings_php.erb'),
-			require => Personal::Types::Clone[$site_name]
+			owner => $username,
+			group => 'nginx',
+			mode => '440',
+			require => [
+				Personal::Types::Clone[$site_name],
+			    Package['nginx'],
+			],
 		}
 
 	} else {

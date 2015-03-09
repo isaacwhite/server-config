@@ -5,4 +5,5 @@
 :hierarchy:
     - config
     - private
+    - "%{::vm_environment}"
 :logger: console

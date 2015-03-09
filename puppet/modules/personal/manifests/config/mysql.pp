@@ -1,6 +1,6 @@
-class personal::mysql_config {
+class personal::config::mysql {
 
-	$private = hiera('access')
+	$private = hiera_hash('access')
 	$password = $private['mysql_admin']['password']
 
 	class { '::mysql::server':

@@ -68,6 +68,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       puppet.manifests_path = "puppet/manifests"
       puppet.module_path = "puppet/modules"
       puppet.manifest_file  = "init.pp"
+      puppet.facter = {
+        "vm_environment" => "sandbox"
+      }
     end
 
   end
@@ -76,25 +79,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     stg.vm.box = "digital_ocean"
     stg.vm.hostname = "GLaDOS-centos-stg"
 
-    # stg.hostsupdater.aliases = [
-    #   "stg.isaacwhite.com",
-    #   "www.stg.isaacwhite.com",
-    #   "stg.mytimes.isaacwhite.com",
-    #   "stg.scylla.isaacwhite.com",
-    #   "stg.joshuarobertwhite.com",
-    #   "www.stg.joshuarobertwhite.com",
-    #   "stg.dev.joshuarobertwhite.com",
-    #   "stg.solomonhoffman.com",
-    #   "www.stg.solomonhoffman.com",
-    #   "stg.dev.solomonhoffman.com",
-    #   "stg.karakrakower.com",
-    #   "stg.dev.karakrakower.com",
-    #   "www.stg.karakrakower.com",
-    #   "bogus.stg.isaacwhite.com",
-    #   "bogus.stg.karakrakower.com",
-    #   "bogus.stg.joshuarobertwhite.com",
-    #   "bogus.stg.solomonhoffman.com"
-    # ]
     
     stg.vm.provider :digital_ocean do |provider, override|
       override.ssh.private_key_path = '~/.ssh/id_rsa'
@@ -105,20 +89,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       provider.client_id = "vagrant"
       provider.api_key = ENV['DIGITAL_OCEAN_KEY']
       provider.image = "centos-6-5-x64"
-      provider.region = "nyc2"
+      provider.region = "nyc3"
       provider.token = ENV['DIGITAL_OCEAN_KEY']
-      provider.size ="1gb"
+      provider.size ="2gb"
     end
 
-    # stg.vm.provision :shell, :path => 'install_puppet.sh'
-    # stg.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
+    stg.vm.provision :shell, :path => 'install_puppet.sh'
+    stg.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
  
-    # stg.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
-    #   puppet.options = "--hiera_config /puppet/manifests/hiera.yaml --parser=future"
-    #   puppet.manifests_path = "puppet/manifests"
-    #   puppet.module_path = "puppet/modules"
-    #   puppet.manifest_file  = "init.pp"
-    # end
+    stg.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
+      puppet.options = "--hiera_config /puppet/hiera.yaml --parser=future"
+      puppet.manifests_path = "puppet/manifests"
+      puppet.module_path = "puppet/modules"
+      puppet.manifest_file  = "init.pp"
+      puppet.facter = {
+        "vm_environment" => "staging"
+      }
+    end
   end
 
   config.vm.define "prod", autostart: false do |prod, override|
@@ -132,7 +119,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       provider.client_id = "vagrant"
       provider.api_key = ENV['DIGITAL_OCEAN_KEY']
       provider.image = "6.5 x64"
-      provider.region = "nyc2"
+      provider.region = "nyc3"
       provider.token = ENV['DIGITAL_OCEAN_KEY']
       provider.size ="2gb"
     end
@@ -145,6 +132,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       puppet.manifests_path = "puppet/manifests"
       puppet.module_path = "puppet/modules"
       puppet.manifest_file  = "init.pp"
+      puppet.facter = {
+        "vm_environment" => "production"
+      }
     end
 
   end

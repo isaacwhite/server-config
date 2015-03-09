@@ -1,10 +1,10 @@
-class personal::files_config {
+class personal::config::files {
 
 	# require all aws file downloads before file extraction
 	Personal::Types::Sync <| |> -> Personal::Types::Extraction <| |>
 
 	# pull config out of hiera
-	$syncs = hiera('aws')
+	$syncs = hiera_hash('aws')
 
 	if ($syncs) {
 		create_resources(personal::types::sync, $syncs)

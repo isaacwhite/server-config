@@ -3,13 +3,16 @@ define personal::types::extraction (
 		$destination,
 		$path = "/sites/default",
 		$filename = '',
+		$should_trigger = undef,
 	) {
 
 	$output_dir = "${destination}${path}"
 
 	ensure_resource('file', $output_dir, {
 		ensure => directory,
-		mode => '775',	
+		# mode => '775',
+		# owner => $personal::params::username,
+		# group => 'nginx',
 	})
 
 	# allow both gzip and tar.gz
@@ -21,6 +24,7 @@ define personal::types::extraction (
 				Package['tar'],
 				File[$output_dir],
 			],
+			notify => $should_trigger,
 		}
 	} 
 
@@ -32,6 +36,7 @@ define personal::types::extraction (
 				Package['gzip'],
 				File[$output_dir],
 			],
+			notify => $should_trigger,
 		}
 	}
 }

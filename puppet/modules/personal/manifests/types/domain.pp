@@ -8,6 +8,7 @@ define personal::types::domain (
 
 	$web_root = '/var/www/'
 	$domain_base = "${web_root}${domain_name}"
+	$username = $personal::params::username
 
 	# the site definition knows to add public_html
 	personal::types::site { $domain_name:
@@ -23,7 +24,9 @@ define personal::types::domain (
 
 		file {$subdomain_path:
 			ensure => directory,
-			require => Personal::Types::Site[$domain_name]
+			require => Personal::Types::Site[$domain_name],
+			owner => $username,
+			group => 'nginx',
 		}
 
 		# now we need to loop through subdomains, processing each of their names to account for parent

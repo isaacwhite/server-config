@@ -6,7 +6,7 @@ define personal::types::sync (
 
 
 	# read from private hiera data
-	$access = hiera('access')
+	$access = hiera_hash('access')
 	# pull out keys
 	$s3_key = $access['aws']['access']
 	$s3_secret = $access['aws']['secret']

@@ -1,22 +1,21 @@
-class personal::zsh_config {
+class personal::config::zsh {
 
 	# pull private data out of hiera
-	$private_data = hiera('access')
+	$private_data = hiera_hash('access')
 	$password = $private_data['user_password']['hash']
+	$username = $personal::params::username
 
 	# alias some params for easy access
-	if $fqdn == 'GLaDOS-local' {
-		$username = 'vagrant'
+	if $username == 'vagrant' {
 
-		user {$username:
+		user { $username:
 			shell => '/bin/zsh',
 			require => Package['zsh'],
 		}
 
 	} else {
-		$username = 'isaac'
 
-		user {'isaac':
+		user { $username:
 			ensure => present,
 			password => $password,
 			managehome => true,
@@ -61,6 +60,9 @@ class personal::zsh_config {
 		path => "/home/${username}/.zshrc",
 		source => "puppet:///modules/personal/.zshrc",
 		require => Exec['install ohmyzsh'],
+		owner => $username,
+		group => $username,
+		mode => '755',
 	}
 
 }

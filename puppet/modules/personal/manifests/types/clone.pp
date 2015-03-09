@@ -4,40 +4,34 @@ define personal::types::clone (
 		$path,
 	) {
 
-	if $fqdn == 'GLaDOS-local' {
-		$user = 'vagrant'
-	} else {
-		$user = 'isaac'
-	}
-
-	
+	$username = $personal::params::username
 
 	ensure_resource('file', 'user ssh folder', {
-		path => "/home/${user}/.ssh",
+		path => "/home/${username}/.ssh",
 		ensure => directory,
 	})
 
 	ensure_resource('file', 'deployer public key', {
-		path => "/home/${user}/.ssh/id_rsa.pub",
+		path => "/home/${username}/.ssh/id_rsa.pub",
 		source => "puppet:///modules/personal/provision_rsa.pub",
-		owner => $user,
+		owner => $username,
 	})
 
 	ensure_resource('file', 'known hosts', {
-		path => "/home/$user/.ssh/known_hosts",
+		path => "/home/${username}/.ssh/known_hosts",
 		source => "puppet:///modules/personal/known_hosts",
-		owner => $user,
 		mode => '0644',
+		owner => $username,
 	})
 
 	ensure_resource('file', 'deployer private key', {
-		path => "/home/${user}/.ssh/id_rsa",
+		path => "/home/${username}/.ssh/id_rsa",
 		source => "puppet:///modules/personal/provision_rsa",
-		owner => $user,
+		owner => $username,
 	})
 
 	exec {"git clone ${path}":
-		command => "git clone ${remote} ${path}",
+		command => "git clone ${remote} .",
 		onlyif => "test ! -d ${path}/.git",
 		path => '/usr/bin',
 		require => [
@@ -46,10 +40,11 @@ define personal::types::clone (
 			File['deployer public key'],
 			File['known hosts']
 		],
-		user => $user,
+		user => $username,
+		cwd => $path,
 	}
 
-	exec {"$ git checkout ${branch} ${path}":
+	exec {"git checkout ${branch} ${path}":
 		command => "git checkout ${branch}",
 		onlyif => "test \"git rev-parse --abbrev-ref HEAD\" != \"${branch}\"",
 		path => '/usr/bin',
@@ -59,7 +54,7 @@ define personal::types::clone (
 			File['deployer public key'],
 			Exec["git clone ${path}"],
 		],
-		user => $user,
+		user => $username,
 		cwd => $path,
 	}
 }
