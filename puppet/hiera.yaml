@@ -1,8 +1,9 @@
 ---
 :backends: yaml
 :yaml:
-    :datadir: '/vagrant/'
+    :datadir: '/puppet/'
 :hierarchy:
     - config
     - private
+    - "%{::vm_environment}"
 :logger: console

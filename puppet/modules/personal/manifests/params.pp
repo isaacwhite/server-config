@@ -1,79 +1,20 @@
 class personal::params {
-	# OHMYZSH
-	$zsh_theme = 'amuse_custom'
-	$box_username = 'vagrant'
-	$zsh_theme_filename = "${zsh_theme}.zsh-theme"
-
-	# NGINX CONFIG
-	$isaac = 'isaacwhite.com'
-	$jrw = 'joshuarobertwhite.com'
-	$sh = 'solomonhoffman.com'
-	$rheo = 'rheomail.com'
-
-	$vhosts = {
-		"${isaac}" => {
-			php => false,
-		},
-		"dev.${isaac}" => {
-			php => false,
-			subdomain_of => $isaac,
-		},
-		"mytimes.${isaac}" => {
-			php => true,
-			subdomain_of => $isaac,
-			subdomain => 'mytimes',
-		},
-		"scylla.${isaac}" => {
-			php => true,
-			subdomain_of => $isaac,
-			subdomain => 'scylla',
-		},
-		"${jrw}" => {
-			php => false,
-		},
-		"dev.${jrw}" => {
-			php => true,
-			subdomain_of => $jrw,
-		},
-		"${sh}" => {
-			php => false,
-		},
-		"dev.${sh}" => {
-			php => true,
-			subdomain_of => $sh,
-		},
-		"${rheo}" => {
-			php => false,
-		},
-		"data.${rheo}" => {
-			php => true,
-			subdomain_of => $rheo,
-			subdomain => 'data',
-		},
+	
+	# provide a user based on environment
+	$username = $vm_environment ? {	
+		'staging' => 'isaac',
+		'production' => 'isaac',
+		default =>'vagrant',
 	}
 
-
-	# MYSQL CONFIG
-	$mysql_root = 'password'
-
-	$db_path = '/var/www/dbs'
-
-	$dbs = {
-		'hoffman' => {
-			path => "${db_path}/hoffman_dev.sql",
-			unzip => true,
-		},
-		'mytimes' => {
-			path => "${db_path}/mytimes.sql",
-			unzip => true,
-		},
-		'scylla' => {
-			path => "${db_path}/scylla.sql",
-			unzip => true,
-		},
-		'jrw' => {
-			path => "${db_path}/jrw_dev.sql",
-			unzip => true,
-		},
+	# local dev environment is symlinked. 
+	# Will error if user/group does not exist on host
+	if $vm_environment != 'sandbox' {
+		$owner = 'isaac'
+		$group = 'nginx'
+	} else {
+		$owner = undef
+		$group = undef
 	}
+
 }

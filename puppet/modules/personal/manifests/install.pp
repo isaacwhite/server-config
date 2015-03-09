@@ -1,25 +1,23 @@
 class personal::install {
 
 	# sets up packages for other classes
-	include personal::packages
+	include personal::config::packages
 	# set timezone to EST
-	include personal::timezone
+	include personal::config::timezone
 	# provide zsh default shell
-	include personal::zsh_config
+	include personal::config::zsh
 	# firewall rules
-	include personal::firewall_config
+	include personal::config::firewall
 	# vhosts / server config
-	include personal::nginx_config
+	include personal::config::nginx
 	# php
-	include personal::php_config
+	include personal::config::php
 	# files (binary and dbs)
-	include personal::files_config
+	include personal::config::files
 	# db installs
-	include personal::mysql_config
-
-	# mysql is dependent on existing files
-	Class['personal::files_config'] -> Class['personal::mysql_config']
-
-	# make sure all repos are updated before packages everywhere.
-	Yumrepo <| |> -> Package <| |>
+	include personal::config::mysql
+	# drush
+	include personal::config::drush
+	# kick off domain configs
+	include personal::config::domains
 }
