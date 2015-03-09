@@ -4,6 +4,7 @@ define personal::types::extraction (
 		$path = "/sites/default",
 		$filename = '',
 		$should_trigger = undef,
+		$once = false,
 	) {
 
 	$output_dir = "${destination}${path}"
@@ -27,13 +28,26 @@ define personal::types::extraction (
 
 	elsif (".gz" in $source) {
 		$extract_to = "${output_dir}${filename}"
-		exec {"gunzip -c ${source} > ${extract_to}":
+		$indicator = "${output_dir}${filename}_extracted"
+
+		exec {"extract ${extract_to}":
+			command => "gunzip -c ${source} > ${extract_to}",
 			path => '/usr/bin',
 			require => [
 				Package['gzip'],
 				File[$output_dir],
 			],
 			notify => $should_trigger,
+			unless => "/usr/bin/test -f ${indicator}",
 		}
+
+		if $once {
+			exec {"touch $indicator":
+				path => '/bin',
+				require => Exec["extract ${extract_to}"],
+				creates => $indicator,
+			}
+		}
+
 	}
 }

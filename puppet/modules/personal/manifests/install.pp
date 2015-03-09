@@ -10,12 +10,14 @@ class personal::install {
 	include personal::config::firewall
 	# vhosts / server config
 	include personal::config::nginx
-	# # php
+	# php
 	include personal::config::php
-	# # files (binary and dbs)
+	# files (binary and dbs)
 	include personal::config::files
-	# # db installs
+	# db installs
 	include personal::config::mysql
-	# # kick off domain configs
+	# drush
+	include personal::config::drush
+	# kick off domain configs
 	include personal::config::domains
 }

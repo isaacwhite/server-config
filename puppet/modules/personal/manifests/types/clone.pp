@@ -32,7 +32,7 @@ define personal::types::clone (
 
 	exec {"git clone ${path}":
 		command => "git clone ${remote} .",
-		onlyif => "test ! -d ${path}/.git",
+		onlyif => "/usr/bin/test ! -d ${path}/.git",
 		path => '/usr/bin',
 		require => [
 			Package['git'],
@@ -46,7 +46,7 @@ define personal::types::clone (
 
 	exec {"git checkout ${branch} ${path}":
 		command => "git checkout ${branch}",
-		onlyif => "test \"git rev-parse --abbrev-ref HEAD\" != \"${branch}\"",
+		unless => "/usr/bin/git rev-parse --abbrev-ref HEAD | /bin/grep -q ${branch}",
 		path => '/usr/bin',
 		require => [
 			Package['git'],

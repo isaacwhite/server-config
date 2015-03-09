@@ -17,6 +17,7 @@ define personal::types::database (
 			filename => $import,
 			path => '',
 			should_trigger => Mysql::Db[$db_name],
+			once => true,
 		}
 
 	} else {

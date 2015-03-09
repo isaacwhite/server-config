@@ -77,7 +77,11 @@ class personal::config::packages {
 		#  extraction dep
 		'gzip',
 		'tar',
+		# drush dep
+		'php-pear',
+		# nginx
 		'nginx',
+		# etc
 		'openssl',
 		'libpng',
 		'vim-enhanced',
