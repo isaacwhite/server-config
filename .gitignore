@@ -3,6 +3,8 @@ puppet/modules/*
 
 # hide private details
 puppet/private.yaml
+puppet/production.yaml
+puppet/staging.yaml
 # hide provisioner keys
 puppet/modules/personal/files/provision*
 
