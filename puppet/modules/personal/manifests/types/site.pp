@@ -6,7 +6,8 @@ define personal::types::site (
 		$root = undef,
 	) {
 
-	$username = $personal::params::username
+	$owner = $personal::params::owner
+	$group = $personal::params::group
 
 	$public = "${root}/public_html"
 	$required_dirs = [$root, $public]
@@ -16,8 +17,8 @@ define personal::types::site (
 
 	file { $required_dirs:
 		ensure => directory,
-		owner => $username,
-		group => 'nginx',
+		owner => $owner,
+		group => $group,
 		mode => '0775',
 	}
 
@@ -54,8 +55,8 @@ define personal::types::site (
 		file { "${public}/sites/default/settings.php":
 			ensure => file,
 			content => template('personal/settings_php.erb'),
-			owner => $username,
-			group => 'nginx',
+			owner => $owner,
+			group => $group,
 			mode => '440',
 			require => [
 				Personal::Types::Clone[$site_name],

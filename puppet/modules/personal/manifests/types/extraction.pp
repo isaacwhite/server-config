@@ -10,9 +10,6 @@ define personal::types::extraction (
 
 	ensure_resource('file', $output_dir, {
 		ensure => directory,
-		# mode => '775',
-		# owner => $personal::params::username,
-		# group => 'nginx',
 	})
 
 	# allow both gzip and tar.gz

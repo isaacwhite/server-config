@@ -5,11 +5,14 @@ class personal::config::domains {
 
 	$required_dirs = ['/var', '/var/www' ]
 
+	$owner = $personal::params::owner
+	$group = $personal::params::group
+
 	file { $required_dirs:
 		ensure => directory,
 		mode => '755',
-		owner => $personal::params::username,
-		group => 'nginx',
+		owner => $owner,
+		group => $group
 	}
 
 	# if we have domains to create (we will) create them
