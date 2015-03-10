@@ -108,27 +108,28 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "prod", autostart: false do |prod, override|
+  config.vm.define "production", autostart: false do |production|
 
-    prod.vm.provider :digital_ocean do |provider, override|
+    production.vm.box = "digital_ocean"
+    production.vm.hostname = "GLaDOS-centos"
+    
+    production.vm.provider :digital_ocean do |provider, override|
       override.ssh.private_key_path = '~/.ssh/id_rsa'
-      override.vm.hostname = "GLaDOS-centos-test"
       override.vm.box = "digital_ocean"
-      override.ssh.forward_agent = true
       
       provider.client_id = "vagrant"
       provider.api_key = ENV['DIGITAL_OCEAN_KEY']
-      provider.image = "6.5 x64"
+      provider.image = "centos-6-5-x64"
       provider.region = "nyc3"
       provider.token = ENV['DIGITAL_OCEAN_KEY']
       provider.size ="2gb"
     end
 
-    prod.vm.provision :shell, :path => 'install_puppet.sh'
-    prod.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
+    production.vm.provision :shell, :path => 'install_puppet.sh'
+    production.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
 
-    prod.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
-      puppet.options = "--hiera_config /puppet/manifests/hiera.yaml --parser=future"
+    production.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
+      puppet.options = "--hiera_config /puppet/hiera.yaml --parser=future"
       puppet.manifests_path = "puppet/manifests"
       puppet.module_path = "puppet/modules"
       puppet.manifest_file  = "init.pp"
