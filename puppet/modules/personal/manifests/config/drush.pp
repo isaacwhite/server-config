@@ -17,4 +17,11 @@ class personal::config::drush {
 		unless => '/usr/bin/test -f /usr/bin/drush',
 	}
 
+	exec {'init drush':
+		command => 'drush version',
+		path => '/usr/bin',
+		require => Exec['install drush'],
+		unless => '/usr/bin/test -d /usr/share/pear/drush/lib/Console_Table-1.1.3',
+	}
+
 }

@@ -1,24 +1,23 @@
 #!/bin/bash
-# Proper header for a Bash script.
 
 now="$(date +'%c')"
 echo "Backup script running at $now"
 
 # DB and file backup
-MYSQL_PWD="<% @mysql_root %>"
-AWS_ACCESS_KEY_ID="<% @s3_key %>"
-AWS_SECRET_ACCESS_KEY="<% @s3_secret %>"
+AWS_ACCESS_KEY_ID="<%= @s3_key %>"
+AWS_SECRET_ACCESS_KEY="<%= @s3_secret %>"
 
-OUTPUT_DIR=/home/<% @username %>/s3_prep
-SITES_DIR=/home/<% @username %>/sites
+OUTPUT_DIR=/home/<%= @username %>/backups
+SITES_DIR=/home/<%= @username %>/sites
 FILES_PATH=sites/default/
+MYSQL_AUTH=$OUTPUT_DIR/my.cnf
 
 # db dumps
 echo "Beginning database backups..."
-mysqldump -u root -h localhost -p$MYSQL_PWD mytimes | gzip -9 > /$OUTPUT_DIR/dbs/mytimes.sql.gz
-mysqldump -u root -h localhost -p$MYSQL_PWD hoffman_dev | gzip -9 > /$OUTPUT_DIR/dbs/hoffman_dev.sql.gz
-mysqldump -u root -h localhost -p$MYSQL_PWD scylla | gzip -9 > /$OUTPUT_DIR/dbs/scylla.sql.gz
-mysqldump -u root -h localhost -p$MYSQL_PWD jrw_dev | gzip -9 > /$OUTPUT_DIR/dbs/jrw_dev.sql.gz
+mysqldump --defaults-extra-file=$MYSQL_AUTH mytimes | gzip -9 > /$OUTPUT_DIR/dbs/mytimes.sql.gz
+mysqldump --defaults-extra-file=$MYSQL_AUTH hoffman_dev | gzip -9 > /$OUTPUT_DIR/dbs/hoffman_dev.sql.gz
+mysqldump --defaults-extra-file=$MYSQL_AUTH scylla | gzip -9 > /$OUTPUT_DIR/dbs/scylla.sql.gz
+mysqldump --defaults-extra-file=$MYSQL_AUTH jrw_dev | gzip -9 > /$OUTPUT_DIR/dbs/jrw_dev.sql.gz
 
 echo "Starting file backups..."
 # file backups
@@ -33,9 +32,7 @@ tar -czf $OUTPUT_DIR/files/mytimes_files.tar.gz files
 
 echo "Uploading to s3..."
 #upload to s3
-/usr/local/bin/aws s3 sync $OUTPUT_DIR s3://s1.isaacwhite.com
+/usr/bin/aws s3 sync $OUTPUT_DIR s3://<% @bucket %>
 
 echo "Script completed."
-exit #  The right and proper method of "exiting" from a script.
-     #  A bare "exit" (no parameter) returns the exit status
-     #+ of the preceding command. 
+exit

@@ -4,6 +4,7 @@ define personal::types::site (
 		$database = undef,
 		$files = undef,
 		$root = undef,
+		$cron = undef,
 	) {
 
 	$owner = $personal::params::owner
@@ -83,6 +84,22 @@ define personal::types::site (
 				require => Personal::Types::Clone[$site_name]
 			}
 		}
+	}
+	$uri = $vm_environment ? {
+		'staging' => "stg.${site_name}",
+		'sandbox' => "sbx.${site_name}",
+		default => $site_name,
+	}
+
+	if $cron and $vm_environment == 'production' {
+		
+		cron {"${site_name} cron":
+			command => "/usr/bin/drush --uri=${uri} --root=${public} --quiet elysia-cron",
+			user => 'nginx',
+			minute => $cron['minutes'],
+			hour => $cron['hours'],
+		}
+
 	}
 
 

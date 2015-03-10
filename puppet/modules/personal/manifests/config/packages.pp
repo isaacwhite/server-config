@@ -85,6 +85,7 @@ class personal::config::packages {
 		'openssl',
 		'libpng',
 		'vim-enhanced',
+		'nodejs',
 	]
 
 

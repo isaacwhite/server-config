@@ -54,6 +54,7 @@ define personal::types::domain (
 						database => $db_config,
 						files => $obj['files'],
 						root => "${subdomain_path}${subdomain_name}",
+						cron => $obj['cron'],
 						require => Personal::Types::Site[$domain_name],
 					}
 					

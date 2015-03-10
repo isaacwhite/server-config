@@ -20,4 +20,6 @@ class personal::install {
 	include personal::config::drush
 	# kick off domain configs
 	include personal::config::domains
+	# set up backups
+	include personal::config::backups
 }

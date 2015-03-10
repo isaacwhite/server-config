@@ -13,12 +13,16 @@ sites:
         database:
           name: "mytimes"
           source: "mytimes.sql.gz"
+        cron:
+          minutes: "*"
       scylla:
         git:
           remote: "git@github.com:isaacwhite/scylla.git"
         database:
           name: "scylla"
           source: "scylla.sql.gz"
+        cron:
+          minutes: "*/5"
 # info about solomonhoffman.com & subdomains 
   solomonhoffman.com:
     git:
@@ -34,6 +38,8 @@ sites:
         database:
           name: "hoffman_dev"
           source: "hoffman_dev.sql.gz"
+        cron:
+          minutes: "*/5"
 # info about joshuarobertwhite.com & subdomains
   joshuarobertwhite.com:
     git:
@@ -49,6 +55,8 @@ sites:
         database:
           name: "jrw_dev"
           source: "jrw_dev.sql.gz"
+        cron:
+          minutes: "*/5"
 # info about karakrakower.com & subdomains
   karakrakower.com:
     subdomains:
@@ -60,4 +68,7 @@ aws:
   databases:
     remote: "/dbs"
     local: "/var/www/dbs"
+backups:
+  cron:
+    hours: 3
 
