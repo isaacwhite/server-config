@@ -52,8 +52,9 @@ define personal::types::site (
 			password => $db_password,
 		}
 
+		$sites_dir = "${public}/sites/default"
 		# save database connection settings after git clone done
-		file { "${public}/sites/default/settings.php":
+		file { "${sites_dir}/settings.php":
 			ensure => file,
 			content => template('personal/settings_php.erb'),
 			owner => $owner,
@@ -63,6 +64,25 @@ define personal::types::site (
 				Personal::Types::Clone[$site_name],
 			    Package['nginx'],
 			],
+		}
+
+		$system_dirs = [
+			"${sites_dir}/files",
+			"${sites_dir}/private",
+			"${sites_dir}/temp",
+			"${public}/cache",
+		]
+
+		file { $system_dirs:
+			ensure => directory,
+			recurse => true,
+			owner => $owner,
+			group => $group,
+			mode => '775',
+			require => [
+				Personal::Types::Clone[$site_name],
+				Package['nginx'],
+			]
 		}
 
 	} else {
@@ -101,7 +121,6 @@ define personal::types::site (
 		}
 
 	}
-
 
 	# provide the nginx vhost for the site
 	personal::types::vhost { $site_name:
