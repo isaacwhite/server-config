@@ -108,36 +108,36 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "production", autostart: false do |production|
+  # config.vm.define "production", autostart: false do |production|
 
-    production.vm.box = "digital_ocean"
-    production.vm.hostname = "GLaDOS-centos"
+  #   production.vm.box = "digital_ocean"
+  #   production.vm.hostname = "GLaDOS-centos"
     
-    production.vm.provider :digital_ocean do |provider, override|
-      override.ssh.private_key_path = '~/.ssh/id_rsa'
-      override.vm.box = "digital_ocean"
+  #   production.vm.provider :digital_ocean do |provider, override|
+  #     override.ssh.private_key_path = '~/.ssh/id_rsa'
+  #     override.vm.box = "digital_ocean"
       
-      provider.client_id = "vagrant"
-      provider.api_key = ENV['DIGITAL_OCEAN_KEY']
-      provider.image = "centos-6-5-x64"
-      provider.region = "nyc3"
-      provider.token = ENV['DIGITAL_OCEAN_KEY']
-      provider.size ="2gb"
-    end
+  #     provider.client_id = "vagrant"
+  #     provider.api_key = ENV['DIGITAL_OCEAN_KEY']
+  #     provider.image = "centos-6-5-x64"
+  #     provider.region = "nyc3"
+  #     provider.token = ENV['DIGITAL_OCEAN_KEY']
+  #     provider.size ="2gb"
+  #   end
 
-    production.vm.provision :shell, :path => 'install_puppet.sh'
-    production.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
+  #   production.vm.provision :shell, :path => 'install_puppet.sh'
+  #   production.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
 
-    production.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
-      puppet.options = "--hiera_config /puppet/hiera.yaml --parser=future"
-      puppet.manifests_path = "puppet/manifests"
-      puppet.module_path = "puppet/modules"
-      puppet.manifest_file  = "init.pp"
-      puppet.facter = {
-        "vm_environment" => "production"
-      }
-    end
+  #   production.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
+  #     puppet.options = "--hiera_config /puppet/hiera.yaml --parser=future"
+  #     puppet.manifests_path = "puppet/manifests"
+  #     puppet.module_path = "puppet/modules"
+  #     puppet.manifest_file  = "init.pp"
+  #     puppet.facter = {
+  #       "vm_environment" => "production"
+  #     }
+  #   end
 
-  end
+  # end
 
 end
