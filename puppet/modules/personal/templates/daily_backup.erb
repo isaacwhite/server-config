@@ -3,10 +3,6 @@
 now="$(date +'%c')"
 echo "Backup script running at $now"
 
-# DB and file backup
-AWS_ACCESS_KEY_ID="<%= @s3_key %>"
-AWS_SECRET_ACCESS_KEY="<%= @s3_secret %>"
-
 OUTPUT_DIR=/home/<%= @username %>/backups
 SITES_DIR=/home/<%= @username %>/sites
 FILES_PATH=sites/default/
@@ -32,7 +28,7 @@ tar -czf $OUTPUT_DIR/files/mytimes_files.tar.gz files
 
 echo "Uploading to s3..."
 #upload to s3
-/usr/bin/aws s3 sync $OUTPUT_DIR s3://<% @bucket %>
+/usr/bin/aws s3 sync $OUTPUT_DIR s3://<%= @bucket %>
 
 echo "Script completed."
 exit

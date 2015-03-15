@@ -41,6 +41,22 @@ class personal::config::backups {
 		require => File[$backup_dir],
 	}
 
+	$aws_config = "${home}/.aws"
+
+	file {$aws_config:
+		ensure => directory,
+		owner => $username,
+		mode => '700',
+	}
+
+	file {"${aws_config}/credentials":
+		ensure => file,
+		content => template('personal/aws_creds.erb'),
+		mode => '600',
+		owner => $username,
+		require => File[$aws_config],
+	}
+
 	file { $script_location:
 		ensure => file,
 		content => template('personal/daily_backup.erb'),
