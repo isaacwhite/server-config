@@ -43,7 +43,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # the path on the host to the actual folder. The second argument is
     # the path on the guest to mount the folder. And the optional third
     # argument is a set of non-required options.
-    sbx.vm.synced_folder "~/workspace", "/var/www", :create => true, :nfs => true
+    sbx.vm.synced_folder "~/workspace", "/var/www", :create => true, type: 'rsync',
+      rsync__exclude: ['.git', 'dbs', 'files', 'settings.php', 'sites/default/files', 'sites/default/private', 'sites/default/temp'],
+      owner: 'vagrant',
+      group: 'nginx'
     sbx.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
 
     # Provider-specific configuration so you can fine-tune various
@@ -62,7 +65,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vb.customize ["modifyvm", :id, "--cpus", "2"]
       vb.customize ["modifyvm", :id, "--ioapic", "on"]
     end
-    
+
     sbx.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
       puppet.options = "--hiera_config /puppet/hiera.yaml --parser=future"
       puppet.manifests_path = "puppet/manifests"
@@ -79,7 +82,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     stg.vm.box = "digital_ocean"
     stg.vm.hostname = "GLaDOS-centos-stg"
 
-    
+
     stg.vm.provider :digital_ocean do |provider, override|
       override.ssh.private_key_path = '~/.ssh/id_rsa'
       override.vm.box = "digital_ocean"
@@ -96,7 +99,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     stg.vm.provision :shell, :path => 'install_puppet.sh'
     stg.vm.synced_folder "puppet", "/puppet", :create => true, :nfs => true
- 
+
     stg.vm.provision :puppet, :options => "--verbose", :module_path => "modules" do |puppet|
       puppet.options = "--hiera_config /puppet/hiera.yaml --parser=future"
       puppet.manifests_path = "puppet/manifests"
@@ -112,11 +115,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   #   production.vm.box = "digital_ocean"
   #   production.vm.hostname = "GLaDOS-centos"
-    
+
   #   production.vm.provider :digital_ocean do |provider, override|
   #     override.ssh.private_key_path = '~/.ssh/id_rsa'
   #     override.vm.box = "digital_ocean"
-      
+
   #     provider.client_id = "vagrant"
   #     provider.api_key = ENV['DIGITAL_OCEAN_KEY']
   #     provider.image = "centos-6-5-x64"
